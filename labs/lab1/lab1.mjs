@@ -28,9 +28,9 @@ console.log('\n--- Assignment 1 ---------------------------------------')
 
 function makeOptions(inv, prop) {
   return Object.entries(inv)
-    .filter(e => e[1][prop])
-    .map(e => `<option value="${e[0]}" key="${e[0]}"> ${e[0]}, ${e[1].price} kr</option>`)
-    .reduce((prev, current) => prev + '\n' + current);
+    .filter(([k, v]) => v[prop])
+    .map(([k, v]) => `<option value="${k}" key="${k}"> ${k}, ${v.price} kr</option>`)
+    .reduce((ack, val) => ack + '\n' + val);
 }
 
 console.log(makeOptions(inventory, 'foundation'));
@@ -78,7 +78,7 @@ console.log(JSON.stringify(myCaesarSalad) + '\n');
 console.log('\n--- Assignment 3 ---------------------------------------')
 
 Salad.prototype.getPrice = function () {
-  return Object.values(this.ingredients).reduce((prev, { price }) => prev + price, 0)
+  return Object.values(this.ingredients).reduce((ack, { price }) => ack + price, 0)
 }
 
 Salad.prototype.count = function (property) {
@@ -139,7 +139,7 @@ class GourmetSalad extends Salad {
 }
 
 GourmetSalad.prototype.getPrice = function () {
-  return Object.values(this.ingredients).reduce((prev, { price, size }) => prev + price * size, 0)
+  return Object.values(this.ingredients).reduce((ack, { price, size }) => ack + price * size, 0)
 }
 
 
