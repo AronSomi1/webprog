@@ -2,6 +2,9 @@
 /**
  * Reflection question 1
  * your answer goes here
+ * Trying to get the value of a property that is not present in an Object literal
+ * will return undefined, which evalueates to false, so it is not necessary to 
+ * assign a value
  */
 
 import inventory from './inventory.mjs';
@@ -22,6 +25,9 @@ for (const name in inventory) {
 }
 /**
  * Reflection question 2
+ * The different loops will give different outputs if the values in inventory are 
+ * not Enumerable. If there is a property that has a false Enumerable value it will be
+ * skipped by the for in statement, but printed by the other. 
  */
 
 console.log('\n--- Assignment 1 ---------------------------------------')
@@ -103,6 +109,28 @@ console.log('check 1: ' + (Salad.prototype === Object.getPrototypeOf(Salad)));
 console.log('check 2: ' + (Salad.prototype === Object.getPrototypeOf(myCaesarSalad)));
 console.log('check 3: ' + (Object.prototype === Object.getPrototypeOf(Salad.prototype)));
 
+/** How are classes and inherited properties represented in JavaScript?
+ *
+ * What is the type and value of: 
+ * Salad : function
+ * Salad.prototype : Object 
+ * Salad.prototype.prototype : undefined 
+ * myCaesarSalad : object 
+ * myCaesarSalad.prototype : undefined
+ * 
+ * What is the difference between an object’s prototype chain and having a prototype
+ * property? 
+ * An objects prototype chain is a chain of objects that are linked to the object
+ * where functions it can call (functions it inherits) are found. 
+ * Object literals and instance objects do not have a prototype property
+ * Constructor Function objects do have a prototype property 
+ * 
+ * Which objects have a prototype property? 
+ * Functions objects except methods, arrow functions or async functions 
+ * How do you get the next object in the prototype chain?
+ * Object.prototype or perhaps Object.getPrototypeOf(object)
+ */
+
 console.log('\n--- Assignment 4 ---------------------------------------')
 
 const singleText = JSON.stringify(myCaesarSalad);
@@ -165,10 +193,21 @@ console.log('Min gourmetsallad har uuid: ' + myGourmetSalad.uuid);
 
 /**
  * Reflection question 4
+ * In which object are static properties stored?
+ * Static properties are stored on the class function itself, and not on the 
+ * prototype property. 
  */
 /**
  * Reflection question 5
+ * Can you make the id property read only?
+ * No
  */
 /**
  * Reflection question 6
+ * Can properties be private?
+ * No, there are ways (using the # prefix) to make private class members, 
+ * but this is just syntaxical sugar
+ * 
+ * This is the same as using closures to hide attributes
  */
+
