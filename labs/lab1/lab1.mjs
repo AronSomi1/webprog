@@ -208,6 +208,7 @@ console.log('Min gourmetsallad har uuid: ' + myGourmetSalad.uuid);
  * No, there are ways (using the # prefix) to make private class members, 
  * but this is just syntaxical sugar
  * 
- * This is the same as using closures to hide attributes
+ * This is the same as using closures to hide attributes. 
+ * 
  */
 
