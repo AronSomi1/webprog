@@ -1,0 +1,9 @@
+1. Om värden som inte sparas som componentens state ändras kommer inte 
+webbläsaren att uppdatera vyn. 
+2. Det är innefektivt att använd effects för att kolla om innehållet i en lista
+har ändrats. 
+3. Nej, vi tycker att det är composesalad som ska ha koll på vilka ingredienser som ingår i 
+salladen
+4. Att componentens state har ändrats
+5. Ja, det gör det. 
+6. Undefined
