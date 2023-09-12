@@ -58,7 +58,7 @@ function ComposeSalad(props) {
         value={dressing}
         onChange={(event) => { setDressing(event.target.value) }} />
 
-      <button type="submit" className="w-auto rounded-2">Add to cart</button>
+      <button type="submit" className="w-auto rounded-2" >Add to cart</button>
 
     </form>
   );

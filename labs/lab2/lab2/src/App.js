@@ -19,7 +19,7 @@ function App() {
       </header>
 
       <div className="container col-12">
-        <ViewOrder shoppingCart={shoppingCart} ></ViewOrder>
+        <ViewOrder shoppingCart={shoppingCart} removeSalad={removeSalad} ></ViewOrder>
         <ComposeSalad inventory={inventory} onSubmit={handleSubmit}></ComposeSalad>
       </div>
 
@@ -34,8 +34,13 @@ function App() {
     console.log(salad.getPrice());
     setShoppingCart([...shoppingCart, salad]);
     event.preventDefault();
-
   }
+
+  function removeSalad(event, salad) {
+    let newShoppingCart = shoppingCart.filter((item) => item.uuid !== salad.uuid)
+    setShoppingCart(newShoppingCart);
+  }
+
 
 }
 
@@ -43,11 +48,20 @@ function ViewOrder(props) {
   return (
     <div className="row h-200  p-5 bg-light border rounded-3">
       <h2>Välj innehållet i din sallad</h2>
-      {props.shoppingCart.map(salad => <label key={salad['uuid']} className='border bg-white me-5 mt-2 ms-5 overflow-hidden'>
-        {Object.keys(salad.ingredients).reduce((ack, ing) => ing + " " + ack, ",Pris: " + salad.getPrice() + " kr")}</label>)}
+      {props.shoppingCart.map(salad =>
+        <div key={salad.uuid}>
+          <button onClick={(event) => props.removeSalad(event, salad)} className="w-auto rounded-2" >RemoveButton</button>
+
+          <label className='border bg-white me-5 mt-2 ms-5'>
+            {Object.keys(salad.ingredients).reduce((ack, ing) => ing + " " + ack, ",Pris: " + salad.getPrice() + " kr")}
+          </label>
+        </div>
+      )}
+
     </div>
 
   )
+
 
 }
 
