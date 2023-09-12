@@ -211,4 +211,3 @@ console.log('Min gourmetsallad har uuid: ' + myGourmetSalad.uuid);
  * This is the same as using closures to hide attributes. 
  * 
  */
-

@@ -8,47 +8,59 @@ function ComposeSalad(props) {
 
   const [foundation, setFoundation] = useState('Pasta');
   const [protein, setProtein] = useState('Kycklingfilé');
-  const [dressing, setDressing] = useState('Caesardressing');
+  const [dressing, setDressing] = useState('Ceasardressing');
 
   const [extra, setExtra] = useState(new Set(["Bacon", "Fetaost"]));
 
+
   return (
-    <div className="container col-12">
-      <form className="row h-200 p-5 bg-light border rounded-3">
-        <h2>Välj bas</h2>
-        <MySaladSelect
-          options={foundations}
-          value={foundation}
-          onChange={(event) => { setFoundation(event.target.value) }}
-        />
-        <h2>Välj protein</h2>
-        <MySaladSelect
-          options={proteins}
-          value={protein}
-          onChange={(event) => { setProtein(event.target.value) }} />
+    <form className="row h-200 p-5 bg-light border rounded-3" onSubmit={(event) => {
 
-        <h2>Välj extra</h2>
-        <MySaladCheckComponent
-          options={extras}
-          selected={extra}
-          onChange={
-            (event) => {
-              if (extra.has(event.target.value)) {
-                let newExtra = new Set(extra);
-                newExtra.delete(event.target.value)
-                setExtra(newExtra);
-              } else { setExtra(new Set([...extra, event.target.value])) }
-              //setExtra({ ...extra, [event.target.value]: !extra[event.target.value] })
-            }
-          } />
-        <h2>Välj dressing</h2>
-        <MySaladSelect
-          options={dressings}
-          value={dressing}
-          onChange={(event) => { setDressing(event.target.value) }} />
+      let saladsliknandeobjekt = { ingredients: {} };
+      let allIngetiets = [foundation, protein, dressing, ...extra];
+      allIngetiets.forEach(name => saladsliknandeobjekt.ingredients[name] = props.inventory[name]);
+      props.onSubmit(event, saladsliknandeobjekt);
+      setFoundation('Pasta');
+      setProtein('Kycklingfilé');
+      setDressing('Ceasardressing');
+      setExtra(new Set(['Bacon', 'Fetaost']));
 
-      </form>
-    </div>
+    }}>
+      <h3>Välj bas</h3>
+      <MySaladSelect
+        options={foundations}
+        value={foundation}
+        onChange={(event) => { setFoundation(event.target.value) }}
+      />
+      <h3>Välj protein</h3>
+      <MySaladSelect
+        options={proteins}
+        value={protein}
+        onChange={(event) => { setProtein(event.target.value) }} />
+
+      <h3>Välj extra</h3>
+      <MySaladCheckComponent
+        options={extras}
+        selected={extra}
+        onChange={
+          (event) => {
+            if (extra.has(event.target.value)) {
+              let newExtra = new Set(extra);
+              newExtra.delete(event.target.value)
+              setExtra(newExtra);
+            } else { setExtra(new Set([...extra, event.target.value])) }
+            //setExtra({ ...extra, [event.target.value]: !extra[event.target.value] })
+          }
+        } />
+      <h3>Välj dressing</h3>
+      <MySaladSelect
+        options={dressings}
+        value={dressing}
+        onChange={(event) => { setDressing(event.target.value) }} />
+
+      <button type="submit" className="w-auto rounded-2">Add to cart</button>
+
+    </form>
   );
 }
 export default ComposeSalad;
@@ -57,18 +69,20 @@ export default ComposeSalad;
 function MySaladSelect({ options, value, onChange }) {
 
   return (
-    <select value={value} onChange={onChange}>
-      {options.map(name => <option key={name} >{name}</option>)}
-    </select>
+    <div className='ps-5 pb-5 pt-3'>
+      <select value={value} onChange={onChange} className='col-4'>
+        {options.map(name => <option key={name} >{name}</option>)}
+      </select>
+    </div>
   )
 
 }
 
 function MySaladCheckComponent({ options, selected, onChange }) {
   return (
-    <div className='list-container'>
+    <div className="row h-200 p-5 bg-light border rounded-3">
       {options.map(name =>
-        <div key={name}>
+        <div key={name} className="col-4">
           <input value={name} type="checkbox" checked={selected.has(name)} onChange={(onChange)} />
           <span>{name}</span>
         </div>)}
