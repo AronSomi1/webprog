@@ -1,14 +1,11 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import inventory from './inventory.ES6';
-import Salad from './Salad';
 import ComposeSalad from './ComposeSalad'
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 
 function App() {
-  let extras = Object.keys(inventory).filter(name => inventory[name].extra);
   const [shoppingCart, setShoppingCart] = useState([]);
   console.log(shoppingCart);
 
@@ -29,14 +26,11 @@ function App() {
     </div >
   );
 
-  function handleSubmit(event, salladsliknandeobjekt) {
-    let salad = Salad.parse(JSON.stringify(salladsliknandeobjekt));
-    console.log(salad.getPrice());
+  function handleSubmit(salad) {
     setShoppingCart([...shoppingCart, salad]);
-    event.preventDefault();
   }
 
-  function removeSalad(event, salad) {
+  function removeSalad(salad) {
     let newShoppingCart = shoppingCart.filter((item) => item.uuid !== salad.uuid)
     setShoppingCart(newShoppingCart);
   }
@@ -50,7 +44,7 @@ function ViewOrder(props) {
       <h2>Välj innehållet i din sallad</h2>
       {props.shoppingCart.map(salad =>
         <div key={salad.uuid}>
-          <button onClick={(event) => props.removeSalad(event, salad)} className="w-auto rounded-2" >RemoveButton</button>
+          <button onClick={() => props.removeSalad(salad)} className="w-auto rounded-2" >RemoveButton</button>
 
           <label className='border bg-white me-5 mt-2 ms-5'>
             {Object.keys(salad.ingredients).reduce((ack, ing) => ing + " " + ack, ",Pris: " + salad.getPrice() + " kr")}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Salad from './Salad';
 
 function ComposeSalad(props) {
   let foundations = Object.keys(props.inventory).filter(name => props.inventory[name].foundation);
@@ -10,20 +11,32 @@ function ComposeSalad(props) {
   const [protein, setProtein] = useState("");
   const [dressing, setDressing] = useState("");
 
-  const [extra, setExtra] = useState(new Set([""]));
+  const [extra, setExtra] = useState(new Set());
 
 
   return (
     <form noValidate className="row h-200 p-5 bg-light border rounded-3" onSubmit={(event) => {
+      event.preventDefault()
 
-      let saladsliknandeobjekt = { ingredients: {} };
-      let allIngetiets = [foundation, protein, dressing, ...extra];
-      allIngetiets.forEach(name => saladsliknandeobjekt.ingredients[name] = props.inventory[name]);
-      props.onSubmit(event, saladsliknandeobjekt);
+      if (!event.target.checkValidity()) {
+        event.target.parentElement.classList.add("was-validated");
+        return;
+      }
+
+      event.target.classList.remove("was-validated")
+
+      let salad = new Salad();
+      salad.add(foundation, props.inventory[foundation]);
+      salad.add(protein, props.inventory[protein])
+      salad.add(dressing, props.inventory[dressing])
+      extra.forEach(name => salad.add(name, props.inventory[name]))
+
+      props.onSubmit(salad)
+
       setFoundation("");
       setProtein("");
       setDressing("");
-      setExtra(new Set(['']));
+      setExtra(new Set());
 
     }}>
       <h3>Välj bas</h3>
@@ -32,14 +45,20 @@ function ComposeSalad(props) {
         value={foundation}
         onChange={(event) => {
           setFoundation(event.target.value);
+          console.log(event)
           event.target.parentElement.classList.add("was-validated");
         }}
+        errorMessage={"Välj en bas"}
       />
       <h3>Välj protein</h3>
       <MySaladSelect
         options={proteins}
         value={protein}
-        onChange={(event) => { setProtein(event.target.value) }} />
+        onChange={(event) => {
+          setProtein(event.target.value)
+          event.target.parentElement.classList.add("was-validated");
+        }}
+        errorMessage={"Välj ett protein"} />
 
       <h3>Välj extra</h3>
       <MySaladCheckComponent
@@ -59,10 +78,13 @@ function ComposeSalad(props) {
       <MySaladSelect
         options={dressings}
         value={dressing}
-        onChange={(event) => { setDressing(event.target.value) }} />
+        onChange={(event) => {
+          setDressing(event.target.value)
+          event.target.parentElement.classList.add("was-validated");
+        }}
+        errorMessage={"Välj en dressing"} />
 
       <button type="submit" className="w-auto rounded-2" >Add to cart</button>
-
 
 
     </form>
@@ -72,17 +94,18 @@ export default ComposeSalad;
 
 
 
-function MySaladSelect({ options, value, onChange }) {
+function MySaladSelect({ options, value, onChange, errorMessage }) {
 
   return (
     <div className='ps-5 pb-5 pt-3'>
-      <select value={value} onChange={onChange} className='col-4' required>
-        <option value="">{"Varför måste tom sträng vara först"}</option>
+      <select value={value} onChange={onChange} className='form-select' required>
+        <option value="">Varför måste tom sträng vara först</option>
         {options.map(name => <option key={name} >{name}</option>)}
       </select>
-      <div class="invalid-feedback">
-        Please choose a salad ingredient
+      <div className="invalid-feedback">
+        {errorMessage}
       </div>
+      <div className='valid-feedback'>Korrekt</div>
     </div>
   )
 
@@ -92,9 +115,9 @@ function MySaladCheckComponent({ options, selected, onChange }) {
   return (
     <div className="row h-200 p-5 bg-light border rounded-3">
       {options.map(name =>
-        <div key={name} className="col-4">
-          <input value={name} type="checkbox" checked={selected.has(name)} onChange={(onChange)} />
-          <span>{name}</span>
+        <div key={name} className="form-check col-4">
+          <input className='form-check-input' value={name} type="checkbox" checked={selected.has(name)} onChange={(onChange)} />
+          <label className='form-check-label'>{name}</label>
         </div>)}
     </div>
   )
