@@ -3,6 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import inventory from './inventory.ES6';
 import ComposeSalad from './ComposeSalad'
 import { useState } from 'react';
+import {
+  Outlet,
+  NavLink,
+  useLoaderData,
+  Form,
+  redirect,
+} from "react-router-dom";
 
 
 function App() {
@@ -37,10 +44,16 @@ function Header() {
   )
 }
 
-function NavBar(props) {
+function NavBar() {
   return (
-    <></>
-  )
+    <ul className="nav nav-tabs">
+      <li className="nav-item">
+        <NavLink className="nav-link" to="/compose-salad">
+          Komponera en sallad
+        </NavLink>
+      </li>
+      {/* more links */}
+    </ul>);
 }
 
 function ViewOrder(props) {
@@ -67,7 +80,5 @@ function Footer() {
     </footer>
   )
 }
-
-
 
 export default App;
