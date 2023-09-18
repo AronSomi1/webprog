@@ -7,3 +7,4 @@ salladen
 4. Att componentens state har ändrats
 5. Ja, det gör det. 
 6. Undefined
+7. The prototype is not copied by the spread operator. 

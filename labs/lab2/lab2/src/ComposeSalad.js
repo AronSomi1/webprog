@@ -60,6 +60,8 @@ function ComposeSalad(props) {
 
       <button type="submit" className="w-auto rounded-2" >Add to cart</button>
 
+
+
     </form>
   );
 }
