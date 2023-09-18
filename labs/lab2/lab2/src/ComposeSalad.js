@@ -100,7 +100,7 @@ function MySaladSelect({ options, value, onChange, errorMessage }) {
     <div className='ps-5 pb-5 pt-3'>
       <select value={value} onChange={onChange} className='form-select' required>
         <option value="">Varför måste tom sträng vara först</option>
-        {options.map(name => <option key={name} >{name}</option>)}
+        {options.map((name,) => <option key={name} >{name}</option>)}
       </select>
       <div className="invalid-feedback">
         {errorMessage}

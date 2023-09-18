@@ -11,18 +11,11 @@ function App() {
 
   return (
     <div className="container py-4">
-      <header className="pb-3 mb-4 border-bottom">
-        <span className="fs-4">Min egen salladsbar</span>
-      </header>
-
-      <div className="container col-12">
-        <ViewOrder shoppingCart={shoppingCart} removeSalad={removeSalad} ></ViewOrder>
-        <ComposeSalad inventory={inventory} onSubmit={handleSubmit}></ComposeSalad>
-      </div>
-
-      <footer className="pt-3 mt-4 text-muted border-top">
-        EDAF90 - webprogrammering
-      </footer>
+      <Header></Header>
+      <NavBar></NavBar>
+      <ViewOrder shoppingCart={shoppingCart} removeSalad={removeSalad} ></ViewOrder>
+      <ComposeSalad inventory={inventory} onSubmit={handleSubmit}></ComposeSalad>
+      <Footer></Footer>
     </div >
   );
 
@@ -34,8 +27,20 @@ function App() {
     let newShoppingCart = shoppingCart.filter((item) => item.uuid !== salad.uuid)
     setShoppingCart(newShoppingCart);
   }
+}
 
+function Header() {
+  return (
+    <header className="pb-3 mb-4 border-bottom">
+      <span className="fs-4">Min egen salladsbar</span>
+    </header>
+  )
+}
 
+function NavBar(props) {
+  return (
+    <></>
+  )
 }
 
 function ViewOrder(props) {
@@ -51,12 +56,16 @@ function ViewOrder(props) {
           </label>
         </div>
       )}
-
     </div>
-
   )
+}
 
-
+function Footer() {
+  return (
+    <footer className="pt-3 mt-4 text-muted border-top">
+      EDAF90 - webprogrammering
+    </footer>
+  )
 }
 
 
