@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from './App';
+import { App, ViewOrder } from './App';
+import ComposeSalad from "./ComposeSalad";
 
 const router = createBrowserRouter([
     {
@@ -7,7 +8,15 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "compose-salad",
-                element: <p>replace with compose salad component</p>
+                element: <ComposeSalad></ComposeSalad>
+            },
+            {
+                path: "view-order",
+                element: <ViewOrder></ViewOrder>
+            },
+            {
+                path: "/",
+                element: <h2>Välkommen</h2>
             }]
     },
 ]);

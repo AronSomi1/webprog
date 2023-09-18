@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import Salad from './Salad';
+import { useOutletContext } from 'react-router-dom';
 
-function ComposeSalad(props) {
+function ComposeSalad() {
+  let props = useOutletContext()
+  console.log(props)
   let foundations = Object.keys(props.inventory).filter(name => props.inventory[name].foundation);
   let extras = Object.keys(props.inventory).filter(name => props.inventory[name].extra);
   let dressings = Object.keys(props.inventory).filter(name => props.inventory[name].dressing);
@@ -15,7 +18,7 @@ function ComposeSalad(props) {
 
 
   return (
-    <form noValidate className="row h-200 p-5 bg-light border rounded-3" onSubmit={(event) => {
+    <form noValidate onSubmit={(event) => {
       event.preventDefault()
 
       if (!event.target.checkValidity()) {
@@ -31,7 +34,7 @@ function ComposeSalad(props) {
       salad.add(dressing, props.inventory[dressing])
       extra.forEach(name => salad.add(name, props.inventory[name]))
 
-      props.onSubmit(salad)
+      props.handleAddSalad(salad)
 
       setFoundation("");
       setProtein("");
@@ -39,6 +42,7 @@ function ComposeSalad(props) {
       setExtra(new Set());
 
     }}>
+      <h2>Välj innehållet i din sallad</h2>
       <h3>Välj bas</h3>
       <MySaladSelect
         options={foundations}

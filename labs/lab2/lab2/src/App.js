@@ -9,6 +9,7 @@ import {
   useLoaderData,
   Form,
   redirect,
+  useOutletContext,
 } from "react-router-dom";
 
 
@@ -20,17 +21,19 @@ function App() {
     <div className="container py-4">
       <Header></Header>
       <NavBar></NavBar>
-      <ViewOrder shoppingCart={shoppingCart} removeSalad={removeSalad} ></ViewOrder>
-      <ComposeSalad inventory={inventory} onSubmit={handleSubmit}></ComposeSalad>
-      <Footer></Footer>
+      <div className="row h-200  p-5 bg-light border rounded-3">
+        <Outlet
+          context={{ shoppingCart, inventory, handleAddSalad, handleRemoveSalad }} />
+        <Footer></Footer>
+      </div>
     </div >
   );
 
-  function handleSubmit(salad) {
+  function handleAddSalad(salad) {
     setShoppingCart([...shoppingCart, salad]);
   }
 
-  function removeSalad(salad) {
+  function handleRemoveSalad(salad) {
     let newShoppingCart = shoppingCart.filter((item) => item.uuid !== salad.uuid)
     setShoppingCart(newShoppingCart);
   }
@@ -52,17 +55,23 @@ function NavBar() {
           Komponera en sallad
         </NavLink>
       </li>
+      <li className="nav-item">
+        <NavLink className="nav-link" to="/view-order">
+          Se din order
+        </NavLink>
+      </li>
       {/* more links */}
     </ul>);
 }
 
-function ViewOrder(props) {
+function ViewOrder() {
+  let props = useOutletContext();
   return (
-    <div className="row h-200  p-5 bg-light border rounded-3">
-      <h2>Välj innehållet i din sallad</h2>
+    <div>
+      <h2>Din order</h2>
       {props.shoppingCart.map(salad =>
         <div key={salad.uuid}>
-          <button onClick={() => props.removeSalad(salad)} className="w-auto rounded-2" >RemoveButton</button>
+          <button onClick={() => props.handleRemoveSalad(salad)} className="w-auto rounded-2" >RemoveButton</button>
 
           <label className='border bg-white me-5 mt-2 ms-5'>
             {Object.keys(salad.ingredients).reduce((ack, ing) => ing + " " + ack, ",Pris: " + salad.getPrice() + " kr")}
@@ -81,4 +90,4 @@ function Footer() {
   )
 }
 
-export default App;
+export { App, ViewOrder };
