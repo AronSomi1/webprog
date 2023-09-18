@@ -6,31 +6,34 @@ function ComposeSalad(props) {
   let dressings = Object.keys(props.inventory).filter(name => props.inventory[name].dressing);
   let proteins = Object.keys(props.inventory).filter(name => props.inventory[name].protein);
 
-  const [foundation, setFoundation] = useState('Pasta');
-  const [protein, setProtein] = useState('Kycklingfilé');
-  const [dressing, setDressing] = useState('Ceasardressing');
+  const [foundation, setFoundation] = useState("");
+  const [protein, setProtein] = useState("");
+  const [dressing, setDressing] = useState("");
 
-  const [extra, setExtra] = useState(new Set(["Bacon", "Fetaost"]));
+  const [extra, setExtra] = useState(new Set([""]));
 
 
   return (
-    <form className="row h-200 p-5 bg-light border rounded-3" onSubmit={(event) => {
+    <form noValidate className="row h-200 p-5 bg-light border rounded-3" onSubmit={(event) => {
 
       let saladsliknandeobjekt = { ingredients: {} };
       let allIngetiets = [foundation, protein, dressing, ...extra];
       allIngetiets.forEach(name => saladsliknandeobjekt.ingredients[name] = props.inventory[name]);
       props.onSubmit(event, saladsliknandeobjekt);
-      setFoundation('Pasta');
-      setProtein('Kycklingfilé');
-      setDressing('Ceasardressing');
-      setExtra(new Set(['Bacon', 'Fetaost']));
+      setFoundation("");
+      setProtein("");
+      setDressing("");
+      setExtra(new Set(['']));
 
     }}>
       <h3>Välj bas</h3>
       <MySaladSelect
         options={foundations}
         value={foundation}
-        onChange={(event) => { setFoundation(event.target.value) }}
+        onChange={(event) => {
+          setFoundation(event.target.value);
+          event.target.parentElement.classList.add("was-validated");
+        }}
       />
       <h3>Välj protein</h3>
       <MySaladSelect
@@ -68,13 +71,18 @@ function ComposeSalad(props) {
 export default ComposeSalad;
 
 
+
 function MySaladSelect({ options, value, onChange }) {
 
   return (
     <div className='ps-5 pb-5 pt-3'>
-      <select value={value} onChange={onChange} className='col-4'>
+      <select value={value} onChange={onChange} className='col-4' required>
+        <option value="">{"Varför måste tom sträng vara först"}</option>
         {options.map(name => <option key={name} >{name}</option>)}
       </select>
+      <div class="invalid-feedback">
+        Please choose a salad ingredient
+      </div>
     </div>
   )
 
