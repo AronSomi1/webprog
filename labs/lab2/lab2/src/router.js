@@ -17,6 +17,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <h2>Välkommen</h2>
+            },
+            {
+                path: "*",
+                element: <h2>Ej giltig URL</h2>
             }]
     },
 ]);

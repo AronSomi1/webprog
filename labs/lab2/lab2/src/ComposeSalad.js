@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import Salad from './Salad';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 function ComposeSalad() {
   let props = useOutletContext()
-  console.log(props)
   let foundations = Object.keys(props.inventory).filter(name => props.inventory[name].foundation);
   let extras = Object.keys(props.inventory).filter(name => props.inventory[name].extra);
   let dressings = Object.keys(props.inventory).filter(name => props.inventory[name].dressing);
   let proteins = Object.keys(props.inventory).filter(name => props.inventory[name].protein);
+
+  const navigate = useNavigate()
 
   const [foundation, setFoundation] = useState("");
   const [protein, setProtein] = useState("");
@@ -22,9 +23,11 @@ function ComposeSalad() {
       event.preventDefault()
 
       if (!event.target.checkValidity()) {
-        event.target.parentElement.classList.add("was-validated");
+        event.target.classList.add("was-validated");
         return;
       }
+
+      //React.Children.forEach(child => { console.log(child); child.classList.remove("was-validated") })
 
       event.target.classList.remove("was-validated")
 
@@ -41,6 +44,8 @@ function ComposeSalad() {
       setDressing("");
       setExtra(new Set());
 
+      navigate("/view-order")
+
     }}>
       <h2>Välj innehållet i din sallad</h2>
       <h3>Välj bas</h3>
@@ -49,7 +54,6 @@ function ComposeSalad() {
         value={foundation}
         onChange={(event) => {
           setFoundation(event.target.value);
-          console.log(event)
           event.target.parentElement.classList.add("was-validated");
         }}
         errorMessage={"Välj en bas"}
@@ -99,7 +103,6 @@ export default ComposeSalad;
 
 
 function MySaladSelect({ options, value, onChange, errorMessage }) {
-
   return (
     <div className='ps-5 pb-5 pt-3'>
       <select value={value} onChange={onChange} className='form-select' required>
