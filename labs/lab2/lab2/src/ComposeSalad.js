@@ -48,49 +48,51 @@ function ComposeSalad() {
 
     }}>
       <h2>Välj innehållet i din sallad</h2>
-      <h3>Välj bas</h3>
-      <MySaladSelect
-        options={foundations}
-        value={foundation}
-        onChange={(event) => {
-          setFoundation(event.target.value);
-          event.target.parentElement.classList.add("was-validated");
-        }}
-        errorMessage={"Välj en bas"}
-      />
-      <h3>Välj protein</h3>
-      <MySaladSelect
-        options={proteins}
-        value={protein}
-        onChange={(event) => {
-          setProtein(event.target.value)
-          event.target.parentElement.classList.add("was-validated");
-        }}
-        errorMessage={"Välj ett protein"} />
+      <div className='ps-4'>
+        <h3>Bas</h3>
+        <MySaladSelect
+          options={foundations}
+          value={foundation}
+          onChange={(event) => {
+            setFoundation(event.target.value);
+            event.target.parentElement.classList.add("was-validated");
+          }}
+          errorMessage={"Välj en bas"}
+        />
+        <h3>Protein</h3>
+        <MySaladSelect
+          options={proteins}
+          value={protein}
+          onChange={(event) => {
+            setProtein(event.target.value)
+            event.target.parentElement.classList.add("was-validated");
+          }}
+          errorMessage={"Välj ett protein"} />
 
-      <h3>Välj extra</h3>
-      <MySaladCheckComponent
-        options={extras}
-        selected={extra}
-        onChange={
-          (event) => {
-            if (extra.has(event.target.value)) {
-              let newExtra = new Set(extra);
-              newExtra.delete(event.target.value)
-              setExtra(newExtra);
-            } else { setExtra(new Set([...extra, event.target.value])) }
-            //setExtra({ ...extra, [event.target.value]: !extra[event.target.value] })
-          }
-        } />
-      <h3>Välj dressing</h3>
-      <MySaladSelect
-        options={dressings}
-        value={dressing}
-        onChange={(event) => {
-          setDressing(event.target.value)
-          event.target.parentElement.classList.add("was-validated");
-        }}
-        errorMessage={"Välj en dressing"} />
+        <h3>Extra</h3>
+        <MySaladCheckComponent
+          options={extras}
+          selected={extra}
+          onChange={
+            (event) => {
+              if (extra.has(event.target.value)) {
+                let newExtra = new Set(extra);
+                newExtra.delete(event.target.value)
+                setExtra(newExtra);
+              } else { setExtra(new Set([...extra, event.target.value])) }
+              //setExtra({ ...extra, [event.target.value]: !extra[event.target.value] })
+            }
+          } />
+        <h3>Dressing</h3>
+        <MySaladSelect
+          options={dressings}
+          value={dressing}
+          onChange={(event) => {
+            setDressing(event.target.value)
+            event.target.parentElement.classList.add("was-validated");
+          }}
+          errorMessage={"Välj en dressing"} />
+      </div>
 
       <button type="submit" className="w-auto rounded-2" >Add to cart</button>
 
@@ -106,7 +108,7 @@ function MySaladSelect({ options, value, onChange, errorMessage }) {
   return (
     <div className='ps-5 pb-5 pt-3'>
       <select value={value} onChange={onChange} className='form-select' required>
-        <option value="">Varför måste tom sträng vara först</option>
+        <option value="">{errorMessage}</option>
         {options.map((name,) => <option key={name} >{name}</option>)}
       </select>
       <div className="invalid-feedback">

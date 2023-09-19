@@ -73,7 +73,7 @@ function ViewOrder() {
       <h2>Din order</h2>
       {props.shoppingCart.map(salad =>
         <div key={salad.uuid}>
-          <button onClick={() => props.handleRemoveSalad(salad)} className="w-auto rounded-2" >RemoveButton</button>
+          <button onClick={() => props.handleRemoveSalad(salad)} className="w-auto rounded-2" >Ta bort</button>
           <label className='border bg-white me-5 mt-2 ms-5'>
             {saladToString(salad)}
           </label>
@@ -105,9 +105,9 @@ function OrderConfirmation() {
 
   return (
     <div className="alert alert-success alert-dismissible fade show" role="alert">
-      <h2>Order Confirmation</h2>
+      <h2>Order mottagen</h2>
       <p>UUID: {uuid} <br />
-        Salad: {saladToString(salad)}
+        Sallad: {saladToString(salad)}
       </p>
       <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
