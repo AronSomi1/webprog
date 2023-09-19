@@ -1,5 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import inventory from './inventory.ES6';
 import ComposeSalad from './ComposeSalad'
 import { useState } from 'react';
@@ -77,9 +78,8 @@ function ViewOrder() {
           </label>
         </div>
       )}
-      <div>
-        <Outlet
-          context={props} />
+      <div className="pt-2">
+        <Outlet context={props} />
       </div>
     </div>
   )
@@ -101,9 +101,10 @@ function OrderConfirmation() {
   console.log(uuid)
 
   return (
-    <div>
+    <div className="alert alert-success alert-dismissible fade show" role="alert">
       <h2>Order Confirmation</h2>
       <p>UUID: {uuid}</p>
+      <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   )
 }
