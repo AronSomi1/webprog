@@ -89,7 +89,9 @@ function ViewOrder() {
 function Footer() {
   return (
     <footer className="pt-3 mt-4 text-muted border-top">
-      EDAF90 - webprogrammering
+      EDAF90 - Webbprogrammering <br />
+      Aron Somi <br />
+      Jesper Kristiansson
     </footer>
   )
 }
