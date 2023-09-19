@@ -18,7 +18,6 @@ function ComposeSalad() {
 
   const [extra, setExtra] = useState(new Set());
 
-
   return (
     <form noValidate onSubmit={(event) => {
       event.preventDefault()

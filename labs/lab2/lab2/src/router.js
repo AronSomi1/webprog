@@ -7,6 +7,10 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
+                index: true,
+                element: <h2>Välkommen</h2>
+            },
+            {
                 path: "compose-salad",
                 element: <ComposeSalad></ComposeSalad>
             },
@@ -17,10 +21,6 @@ const router = createBrowserRouter([
                     path: "order-confirmation/:uuid",
                     element: <OrderConfirmation></OrderConfirmation>,
                 }]
-            },
-            {
-                path: "/",
-                element: <h2>Välkommen</h2>
             },
             {
                 path: "*",

@@ -13,7 +13,6 @@ import {
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
-  console.log(shoppingCart);
 
   return (
     <div className="container py-4">
@@ -63,7 +62,6 @@ function NavBar() {
 }
 
 function saladToString(salad) {
-  console.log(salad);
   return Object.keys(salad.ingredients).reduce((ack, ing) => ing + ", " + ack, "Pris: " + salad.getPrice() + " kr")
 }
 
@@ -71,7 +69,10 @@ function ViewOrder() {
   let props = useOutletContext();
   return (
     <div>
-      <h2>Din order</h2>
+      <div>
+        <Outlet context={props} />
+      </div>
+      <h2>Varukorg</h2>
       {props.shoppingCart.map(salad =>
         <div key={salad.uuid}>
           <button onClick={() => props.handleRemoveSalad(salad)} className="w-auto rounded-2" >Ta bort</button>
@@ -80,9 +81,6 @@ function ViewOrder() {
           </label>
         </div>
       )}
-      <div className="pt-2">
-        <Outlet context={props} />
-      </div>
     </div>
   )
 }
@@ -101,11 +99,18 @@ function OrderConfirmation() {
   let props = useOutletContext();
   let params = useParams();
   let uuid = params.uuid;
-  console.log(uuid)
 
   let salad = props.shoppingCart.filter(salad => salad.uuid === uuid);
-  salad = salad[0]
+  if (salad.length === 0) {
+    return (
+      <div className="alert alert-danger alert-dismissible fade show" role="alert">
+        <h2>Ogiltig UUID: {uuid}</h2>
+        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    )
+  }
 
+  salad = salad[0]
   return (
     <div className="alert alert-success alert-dismissible fade show" role="alert">
       <h2>Order mottagen</h2>
