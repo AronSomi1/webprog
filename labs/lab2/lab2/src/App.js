@@ -2,14 +2,11 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import inventory from './inventory.ES6';
-import ComposeSalad from './ComposeSalad'
 import { useState } from 'react';
 import {
   Outlet,
   NavLink,
-  useLoaderData,
-  Form,
-  redirect,
+  useParams,
   useOutletContext,
 } from "react-router-dom";
 
@@ -65,6 +62,10 @@ function NavBar() {
     </ul>);
 }
 
+function saladToString(salad) {
+  return Object.keys(salad.ingredients).reduce((ack, ing) => ing + ", " + ack, "Pris: " + salad.getPrice() + " kr")
+}
+
 function ViewOrder() {
   let props = useOutletContext();
   return (
@@ -74,7 +75,7 @@ function ViewOrder() {
         <div key={salad.uuid}>
           <button onClick={() => props.handleRemoveSalad(salad)} className="w-auto rounded-2" >RemoveButton</button>
           <label className='border bg-white me-5 mt-2 ms-5'>
-            {Object.keys(salad.ingredients).reduce((ack, ing) => ing + " " + ack, ",Pris: " + salad.getPrice() + " kr")}
+            {saladToString(salad)}
           </label>
         </div>
       )}
@@ -95,15 +96,19 @@ function Footer() {
 
 function OrderConfirmation() {
   let props = useOutletContext();
-  let shoppingCart = props.shoppingCart;
-  let salad = shoppingCart.slice(-1).pop();
-  let uuid = salad.uuid;
+  let params = useParams();
+  let uuid = params.uuid;
   console.log(uuid)
+
+  let salad = props.shoppingCart.filter(salad => salad.uuid === uuid);
+  salad = salad[0]
 
   return (
     <div className="alert alert-success alert-dismissible fade show" role="alert">
       <h2>Order Confirmation</h2>
-      <p>UUID: {uuid}</p>
+      <p>UUID: {uuid} <br />
+        Salad: {saladToString(salad)}
+      </p>
       <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   )
