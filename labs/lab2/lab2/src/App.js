@@ -23,7 +23,7 @@ function App() {
       <NavBar></NavBar>
       <div className="row h-200  p-5 bg-light border rounded-3">
         <Outlet
-          context={{ shoppingCart, inventory, handleAddSalad, handleRemoveSalad }} />
+          context={{ shoppingCart, inventory, handleAddSalad, handleRemoveSalad, OrderConfirmation }} />
         <Footer></Footer>
       </div>
     </div >
@@ -72,12 +72,15 @@ function ViewOrder() {
       {props.shoppingCart.map(salad =>
         <div key={salad.uuid}>
           <button onClick={() => props.handleRemoveSalad(salad)} className="w-auto rounded-2" >RemoveButton</button>
-
           <label className='border bg-white me-5 mt-2 ms-5'>
             {Object.keys(salad.ingredients).reduce((ack, ing) => ing + " " + ack, ",Pris: " + salad.getPrice() + " kr")}
           </label>
         </div>
       )}
+      <div>
+        <Outlet
+          context={props} />
+      </div>
     </div>
   )
 }
@@ -90,4 +93,19 @@ function Footer() {
   )
 }
 
-export { App, ViewOrder };
+function OrderConfirmation() {
+  let props = useOutletContext();
+  let shoppingCart = props.shoppingCart;
+  let salad = shoppingCart.slice(-1).pop();
+  let uuid = salad.uuid;
+  console.log(uuid)
+
+  return (
+    <div>
+      <h2>Order Confirmation</h2>
+      <p>UUID: {uuid}</p>
+    </div>
+  )
+}
+
+export { App, ViewOrder, OrderConfirmation };

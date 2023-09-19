@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { App, ViewOrder } from './App';
+import { App, ViewOrder, OrderConfirmation } from './App';
 import ComposeSalad from "./ComposeSalad";
 
 const router = createBrowserRouter([
@@ -12,7 +12,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "view-order",
-                element: <ViewOrder></ViewOrder>
+                element: <ViewOrder></ViewOrder>,
+                children: [{
+                    path: "order-confirmation/:uuid",
+                    element: <OrderConfirmation></OrderConfirmation>,
+                }]
             },
             {
                 path: "/",

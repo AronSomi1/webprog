@@ -38,13 +38,13 @@ function ComposeSalad() {
       extra.forEach(name => salad.add(name, props.inventory[name]))
 
       props.handleAddSalad(salad)
-
+      let uuid = salad.uuid;
       setFoundation("");
       setProtein("");
       setDressing("");
       setExtra(new Set());
 
-      navigate("/view-order")
+      navigate("/view-order/order-confirmation/" + uuid) //navigera till /view-order/order-confirmation/id
 
     }}>
       <h2>Välj innehållet i din sallad</h2>
