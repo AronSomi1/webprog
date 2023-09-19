@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Salad from './Salad';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import inventory from './inventory.ES6';
 
 function ComposeSalad() {
   let props = useOutletContext()
@@ -52,6 +53,7 @@ function ComposeSalad() {
         <h3>Bas</h3>
         <MySaladSelect
           options={foundations}
+          inventory={inventory}
           value={foundation}
           onChange={(event) => {
             setFoundation(event.target.value);
@@ -62,6 +64,7 @@ function ComposeSalad() {
         <h3>Protein</h3>
         <MySaladSelect
           options={proteins}
+          inventory={inventory}
           value={protein}
           onChange={(event) => {
             setProtein(event.target.value)
@@ -72,6 +75,7 @@ function ComposeSalad() {
         <h3>Extra</h3>
         <MySaladCheckComponent
           options={extras}
+          inventory={inventory}
           selected={extra}
           onChange={
             (event) => {
@@ -86,6 +90,7 @@ function ComposeSalad() {
         <h3>Dressing</h3>
         <MySaladSelect
           options={dressings}
+          inventory={inventory}
           value={dressing}
           onChange={(event) => {
             setDressing(event.target.value)
@@ -104,12 +109,12 @@ export default ComposeSalad;
 
 
 
-function MySaladSelect({ options, value, onChange, errorMessage }) {
+function MySaladSelect({ options, inventory, value, onChange, errorMessage }) {
   return (
     <div className='ps-5 pb-5 pt-3'>
       <select value={value} onChange={onChange} className='form-select' required>
         <option value="">{errorMessage}</option>
-        {options.map((name,) => <option key={name} >{name}</option>)}
+        {options.map((name,) => <option key={name} value={name}>{name + " (" + inventory[name].price + " kr)"}</option>)}
       </select>
       <div className="invalid-feedback">
         {errorMessage}
@@ -120,13 +125,13 @@ function MySaladSelect({ options, value, onChange, errorMessage }) {
 
 }
 
-function MySaladCheckComponent({ options, selected, onChange }) {
+function MySaladCheckComponent({ options, inventory, selected, onChange }) {
   return (
     <div className="row h-200 p-5 bg-light border rounded-3">
       {options.map(name =>
         <div key={name} className="form-check col-4">
           <input className='form-check-input' value={name} type="checkbox" checked={selected.has(name)} onChange={(onChange)} />
-          <label className='form-check-label'>{name}</label>
+          <label className='form-check-label'>{name + " (" + inventory[name].price + " kr)"}</label>
         </div>)}
     </div>
   )

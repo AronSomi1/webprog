@@ -63,6 +63,7 @@ function NavBar() {
 }
 
 function saladToString(salad) {
+  console.log(salad);
   return Object.keys(salad.ingredients).reduce((ack, ing) => ing + ", " + ack, "Pris: " + salad.getPrice() + " kr")
 }
 
