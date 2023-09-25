@@ -9,6 +9,7 @@ import {
   useParams,
   useOutletContext,
 } from "react-router-dom";
+import Salad from "./Salad";
 
 function safeFetchJson(url, options) {
   return fetch(url, options)
@@ -25,6 +26,10 @@ function App() {
   const [inventory, setInventory] = useState({});
 
   useEffect(() => {
+    const cart = localStorage.getItem('shoppingCart');
+    const salads = Salad.parse(cart)
+    setShoppingCart(salads)
+
     async function fetchIngredient(type, name) {
       const properties = await safeFetchJson("http://localhost:8080/" + type + "/" + name)
       return { [name]: properties }
@@ -63,7 +68,9 @@ function App() {
   );
 
   function handleAddSalad(salad) {
-    setShoppingCart([...shoppingCart, salad]);
+    const newShoppingCart = [...shoppingCart, salad]
+    setShoppingCart(newShoppingCart);
+    localStorage.setItem("shoppingCart", JSON.stringify(newShoppingCart))
   }
 
   function handleRemoveSalad(salad) {
@@ -87,7 +94,13 @@ function App() {
     }
 
     console.log("Sending order: " + JSON.stringify(saladOrder))
-    safeFetchJson('http://localhost:8080/orders/', options).then(console.log)
+    safeFetchJson('http://localhost:8080/orders/', options).then(data => {
+      if (data.status === "confirmed") {
+        console.log("order success")
+      } else {
+        console.log("order fail")
+      }
+    })
   }
 }
 
