@@ -1,8 +1,8 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import inventory from './inventory.ES6';
-import { useState } from 'react';
+//import inventory from './inventory.ES6';
+import { useState, useEffect } from 'react';
 import {
   Outlet,
   NavLink,
@@ -13,6 +13,43 @@ import {
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
+  const [inventory, setInventory] = useState({});
+
+  useEffect(() => {
+    function safeFetchJson(url) {
+      return fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`${url} returned status   ${response.status}`);
+          }
+          return response.json();
+        })
+    }
+
+    async function fetchIngredient(type, name) {
+      const properties = await safeFetchJson("http://localhost:8080/" + type + "/" + name)
+      return { [name]: properties }
+    }
+
+    async function fetchIngredients(type) {
+      const names = await safeFetchJson("http://localhost:8080/" + type)
+      const ingredients = await Promise.all(names.map(name => fetchIngredient(type, name)))
+      return ingredients
+    }
+
+    const types = ["foundations", "proteins", "extras", "dressings"]
+    const fetches = types.map(fetchIngredients)
+
+    // fetches.forEach(promise => promise.then(data => {
+    //   const newInventory = Object.assign({}, ...data);
+    //   setInventory(oldInventory => { return { ...oldInventory, ...newInventory } })
+    // }))
+
+    Promise.all(fetches).then(data => {
+      const newInventory = Object.assign({}, ...data.flat());
+      setInventory(newInventory)
+    })
+  }, [])
 
   return (
     <div className="container py-4">
