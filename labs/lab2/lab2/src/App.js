@@ -10,22 +10,21 @@ import {
   useOutletContext,
 } from "react-router-dom";
 
+function safeFetchJson(url, options) {
+  return fetch(url, options)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`${url} returned status   ${response.status}`);
+      }
+      return response.json();
+    })
+}
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
   const [inventory, setInventory] = useState({});
 
   useEffect(() => {
-    function safeFetchJson(url) {
-      return fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`${url} returned status   ${response.status}`);
-          }
-          return response.json();
-        })
-    }
-
     async function fetchIngredient(type, name) {
       const properties = await safeFetchJson("http://localhost:8080/" + type + "/" + name)
       return { [name]: properties }
@@ -57,7 +56,7 @@ function App() {
       <NavBar></NavBar>
       <div className="row h-200  p-5 bg-light border rounded-3">
         <Outlet
-          context={{ shoppingCart, inventory, handleAddSalad, handleRemoveSalad, OrderConfirmation }} />
+          context={{ shoppingCart, inventory, handleAddSalad, handleRemoveSalad, OrderConfirmation, handleSendOrder }} />
         <Footer></Footer>
       </div>
     </div >
@@ -70,6 +69,25 @@ function App() {
   function handleRemoveSalad(salad) {
     let newShoppingCart = shoppingCart.filter((item) => item.uuid !== salad.uuid)
     setShoppingCart(newShoppingCart);
+  }
+
+  function handleSendOrder() {
+    const saladOrder = shoppingCart.reduce((ack, salad) => ([
+      ...ack,
+      Object.keys(salad.ingredients).reduce((ack, name) => [...ack, name], [])
+    ]),
+      [])
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(saladOrder)
+    }
+
+    console.log("Sending order: " + JSON.stringify(saladOrder))
+    safeFetchJson('http://localhost:8080/orders/', options).then(console.log)
   }
 }
 
@@ -118,6 +136,7 @@ function ViewOrder() {
           </label>
         </div>
       )}
+      <button onClick={() => props.handleSendOrder()} className="w-auto rounded-2" >Beställ</button>
     </div>
   )
 }
