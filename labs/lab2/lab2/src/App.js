@@ -10,18 +10,11 @@ import {
   useOutletContext,
 } from "react-router-dom";
 
-function safeFetchJson(url, options) {
-  return fetch(url, options)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${url} returned status   ${response.status}`);
-      }
-      return response.json();
-    })
-}
+
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
+
   const [inventory, setInventory] = useState({});
 
   useEffect(() => {
@@ -56,7 +49,7 @@ function App() {
       <NavBar></NavBar>
       <div className="row h-200  p-5 bg-light border rounded-3">
         <Outlet
-          context={{ shoppingCart, inventory, handleAddSalad, handleRemoveSalad, OrderConfirmation, handleSendOrder }} />
+          context={{ shoppingCart, handleAddSalad, handleRemoveSalad, OrderConfirmation, handleSendOrder }} />
         <Footer></Footer>
       </div>
     </div >
@@ -64,6 +57,16 @@ function App() {
 
   function handleAddSalad(salad) {
     setShoppingCart([...shoppingCart, salad]);
+  }
+
+  function safeFetchJson(url, options) {
+    return fetch(url, options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`${url} returned status   ${response.status}`);
+        }
+        return response.json();
+      })
   }
 
   function handleRemoveSalad(salad) {
