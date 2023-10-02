@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import Salad from './Salad';
-import { useNavigate, useOutletContext } from 'react-router-dom';
-import inventory from './inventory.ES6';
+import { useLoaderData, useNavigate, useOutletContext } from 'react-router-dom';
 
 function ComposeSalad() {
-  let props = useOutletContext()
-  let foundations = Object.keys(props.inventory).filter(name => props.inventory[name].foundation);
-  let extras = Object.keys(props.inventory).filter(name => props.inventory[name].extra);
-  let dressings = Object.keys(props.inventory).filter(name => props.inventory[name].dressing);
-  let proteins = Object.keys(props.inventory).filter(name => props.inventory[name].protein);
+  let props = useOutletContext();
+  let inventory = useLoaderData()
+  let foundations = Object.keys(inventory).filter(name => inventory[name].foundation);
+  let extras = Object.keys(inventory).filter(name => inventory[name].extra);
+  let dressings = Object.keys(inventory).filter(name => inventory[name].dressing);
+  let proteins = Object.keys(inventory).filter(name => inventory[name].protein);
 
   const navigate = useNavigate()
 
@@ -32,10 +32,10 @@ function ComposeSalad() {
       event.target.classList.remove("was-validated")
 
       let salad = new Salad();
-      salad.add(foundation, props.inventory[foundation]);
-      salad.add(protein, props.inventory[protein])
-      salad.add(dressing, props.inventory[dressing])
-      extra.forEach(name => salad.add(name, props.inventory[name]))
+      salad.add(foundation, inventory[foundation]);
+      salad.add(protein, inventory[protein])
+      salad.add(dressing, inventory[dressing])
+      extra.forEach(name => salad.add(name, inventory[name]))
 
       props.handleAddSalad(salad)
       let uuid = salad.uuid;
@@ -104,7 +104,6 @@ function ComposeSalad() {
     </form>
   );
 }
-export default ComposeSalad;
 
 
 
@@ -135,3 +134,47 @@ function MySaladCheckComponent({ options, inventory, selected, onChange }) {
     </div>
   )
 }
+
+async function inventoryLoader() {
+
+  function safeFetchJson(url, options) {
+    return fetch(url, options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`${url} returned status   ${response.status}`);
+        }
+        return response.json();
+      })
+  }
+
+
+  async function fetchIngredient(type, name) {
+    const properties = await safeFetchJson("http://localhost:8080/" + type + "/" + name)
+    return { [name]: properties }
+  }
+
+  async function fetchIngredients(type) {
+    const names = await safeFetchJson("http://localhost:8080/" + type)
+    const ingredients = await Promise.all(names.map(name => fetchIngredient(type, name)))
+    return ingredients
+  }
+
+  const types = ["foundations", "proteins", "extras", "dressings"]
+  const fetches = types.map(fetchIngredients)
+
+  // fetches.forEach(promise => promise.then(data => {
+  //   const newInventory = Object.assign({}, ...data);
+  //   setInventory(oldInventory => { return { ...oldInventory, ...newInventory } })
+  // }))
+
+  const inventory = await Promise.all(fetches).then(data => {
+    const newInventory = Object.assign({}, ...data.flat());
+    return new Promise((resolve) => {
+      console.log("Innuti FetchIngredients");
+      setTimeout(() => resolve(newInventory), 0);
+    })
+  });
+
+  return inventory;
+}
+export { ComposeSalad, inventoryLoader };

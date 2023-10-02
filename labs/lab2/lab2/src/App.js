@@ -22,30 +22,6 @@ function App() {
     const cart = localStorage.getItem('shoppingCart');
     const salads = Salad.parse(cart)
     setShoppingCart(salads)
-
-    async function fetchIngredient(type, name) {
-      const properties = await safeFetchJson("http://localhost:8080/" + type + "/" + name)
-      return { [name]: properties }
-    }
-
-    async function fetchIngredients(type) {
-      const names = await safeFetchJson("http://localhost:8080/" + type)
-      const ingredients = await Promise.all(names.map(name => fetchIngredient(type, name)))
-      return ingredients
-    }
-
-    const types = ["foundations", "proteins", "extras", "dressings"]
-    const fetches = types.map(fetchIngredients)
-
-    // fetches.forEach(promise => promise.then(data => {
-    //   const newInventory = Object.assign({}, ...data);
-    //   setInventory(oldInventory => { return { ...oldInventory, ...newInventory } })
-    // }))
-
-    Promise.all(fetches).then(data => {
-      const newInventory = Object.assign({}, ...data.flat());
-      setInventory(newInventory)
-    })
   }, [])
 
   return (
