@@ -44,7 +44,7 @@ function ComposeSalad() {
       setDressing("");
       setExtra(new Set());
 
-      navigate("/view-order/order-confirmation/" + uuid) //navigera till /view-order/order-confirmation/id
+      navigate("/view-order/salad-confirmation/" + uuid) //navigera till /view-order/order-confirmation/id
 
     }}>
       <h2>Välj innehållet i din sallad</h2>

@@ -8,17 +8,21 @@ import {
   NavLink,
   useParams,
   useOutletContext,
-  useNavigation
+  useNavigation,
+  useNavigate
 } from "react-router-dom";
 import Salad from "./Salad";
 
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const cart = localStorage.getItem('shoppingCart');
-    const salads = Salad.parse(cart)
-    setShoppingCart(salads)
+    if (cart !== null) {
+      const salads = Salad.parse(cart)
+      setShoppingCart(salads)
+    }
+
   }, [])
 
   const navigation = useNavigation();
@@ -31,7 +35,7 @@ function App() {
       <NavBar></NavBar>
       <div className="row h-200  p-5 bg-light border rounded-3">
         {searching ? <BootstrapSpinner /> :
-          <Outlet context={{ shoppingCart, handleAddSalad, handleRemoveSalad, OrderConfirmation, handleSendOrder }} />}
+          <Outlet context={{ shoppingCart, handleAddSalad, handleRemoveSalad, SaladConfirmation, handleSendOrder }} />}
         <Footer></Footer>
       </div>
     </div >
@@ -58,7 +62,10 @@ function App() {
     setShoppingCart(newShoppingCart);
   }
 
-  function handleSendOrder() {
+  async function handleSendOrder() {
+    if (shoppingCart.length == 0) {
+      return { status: "empty" };
+    }
     const saladOrder = shoppingCart.reduce((ack, salad) => ([
       ...ack,
       Object.keys(salad.ingredients).reduce((ack, name) => [...ack, name], [])
@@ -74,14 +81,12 @@ function App() {
     }
 
     console.log("Sending order: " + JSON.stringify(saladOrder))
-    safeFetchJson('http://localhost:8080/orders/', options).then(data => {
-      console.log(data)
-      if (data.status === "confirmed") {
-        console.log("order success")
-      } else {
-        console.log("order fail")
-      }
-    })
+    const data = await safeFetchJson('http://localhost:8080/orders/', options);
+    if (data.status === "confirmed") {
+      setShoppingCart([])
+      localStorage.removeItem("shoppingCart")
+    }
+    return data;
   }
 }
 
@@ -123,6 +128,12 @@ function saladToString(salad) {
 }
 
 function ViewOrder() {
+  const [confirmedState, setConfirmState] = useState({});
+  const navigate = useNavigate();
+  useEffect(() => {
+    setConfirmState({})
+  }, [])
+
   let props = useOutletContext();
   return (
     <div>
@@ -138,9 +149,47 @@ function ViewOrder() {
           </label>
         </div>
       )}
-      <button onClick={() => props.handleSendOrder()} className="w-auto rounded-2" >Beställ</button>
+      <button onClick={() => props.handleSendOrder().then((data) => {
+        setConfirmState(data)
+        navigate("/view-order/")
+      })} className="w-auto rounded-2" >Beställ</button>
+      <ShowConfirmation
+        data={confirmedState} />
     </div>
   )
+}
+
+function ShowConfirmation(props) {
+
+  const data = props.data
+  console.log(data)
+  if (data.status === undefined) {
+    return <></>;
+  }
+
+  if (data.status !== "confirmed") {
+    return (
+      <div className="alert alert-danger alert-dismissible fade show" role="alert">
+        <h2>{data.status === "empty" ? "Kundvagnen är tom" : "Ordern gick inte att ta emot"}</h2>
+        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    )
+  }
+
+
+  return (
+    <div className="alert alert-success alert-dismissible fade show" role="alert">
+      <h2>Orderbekräftelse</h2>
+      <p>Status: {data.status} <br />
+        Ordernummer: {data.uuid} <br />
+        Tid: {data.timestamp} <br />
+        Antal Sallader: {data.order.length} <br />
+        Pris : {data.price} kr
+      </p>
+      <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  )
+
 }
 
 function Footer() {
@@ -153,7 +202,8 @@ function Footer() {
   )
 }
 
-function OrderConfirmation() {
+
+function SaladConfirmation() {
   let props = useOutletContext();
   let params = useParams();
   let uuid = params.uuid;
@@ -171,7 +221,7 @@ function OrderConfirmation() {
   salad = salad[0]
   return (
     <div className="alert alert-success alert-dismissible fade show" role="alert">
-      <h2>Order mottagen</h2>
+      <h2>Salad mottagen</h2>
       <p>UUID: {uuid} <br />
         Sallad: {saladToString(salad)}
       </p>
@@ -180,4 +230,4 @@ function OrderConfirmation() {
   )
 }
 
-export { App, ViewOrder, OrderConfirmation };
+export { App, ViewOrder, SaladConfirmation };
