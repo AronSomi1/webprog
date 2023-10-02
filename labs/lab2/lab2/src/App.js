@@ -8,15 +8,12 @@ import {
   NavLink,
   useParams,
   useOutletContext,
+  useNavigation
 } from "react-router-dom";
 import Salad from "./Salad";
 
-
-
 function App() {
   const [shoppingCart, setShoppingCart] = useState([]);
-
-  const [inventory, setInventory] = useState({});
 
   useEffect(() => {
     const cart = localStorage.getItem('shoppingCart');
@@ -24,13 +21,17 @@ function App() {
     setShoppingCart(salads)
   }, [])
 
+  const navigation = useNavigation();
+  const searching = navigation.state === 'loading';
+  console.log("searching = " + searching)
+
   return (
     <div className="container py-4">
       <Header></Header>
       <NavBar></NavBar>
       <div className="row h-200  p-5 bg-light border rounded-3">
-        <Outlet
-          context={{ shoppingCart, handleAddSalad, handleRemoveSalad, OrderConfirmation, handleSendOrder }} />
+        {searching ? <BootstrapSpinner /> :
+          <Outlet context={{ shoppingCart, handleAddSalad, handleRemoveSalad, OrderConfirmation, handleSendOrder }} />}
         <Footer></Footer>
       </div>
     </div >
@@ -74,6 +75,7 @@ function App() {
 
     console.log("Sending order: " + JSON.stringify(saladOrder))
     safeFetchJson('http://localhost:8080/orders/', options).then(data => {
+      console.log(data)
       if (data.status === "confirmed") {
         console.log("order success")
       } else {
@@ -81,6 +83,14 @@ function App() {
       }
     })
   }
+}
+
+function BootstrapSpinner() {
+  return <div className="d-flex justify-content-center">
+    <div className="spinner-border" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  </div>
 }
 
 function Header() {
