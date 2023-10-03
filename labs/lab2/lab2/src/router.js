@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { App, ViewOrder, SaladConfirmation } from './App';
+import { App, ViewOrder, SaladConfirmation, ShowConfimedList } from './App';
 import { ComposeSalad, inventoryLoader } from "./ComposeSalad";
 
 const router = createBrowserRouter([
@@ -15,6 +15,10 @@ const router = createBrowserRouter([
                 element: <ComposeSalad></ComposeSalad>,
                 loader: inventoryLoader,
 
+            },
+            {
+                path: "confirmedOrders",
+                element: <ShowConfimedList />
             },
             {
                 path: "view-order",

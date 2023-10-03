@@ -167,13 +167,14 @@ async function inventoryLoader() {
   //   setInventory(oldInventory => { return { ...oldInventory, ...newInventory } })
   // }))
 
-  const inventory = await Promise.all(fetches).then(data => {
-    const newInventory = Object.assign({}, ...data.flat());
-    return new Promise((resolve) => {
-      console.log("Innuti FetchIngredients");
-      setTimeout(() => resolve(newInventory), 0);
-    })
-  });
+  const inventory = await Promise.all(fetches).
+    then(data => {
+      const newInventory = Object.assign({}, ...data.flat());
+
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(newInventory), 500);
+      })
+    });
 
   return inventory;
 }

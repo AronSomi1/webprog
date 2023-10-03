@@ -14,8 +14,10 @@ import {
 import Salad from "./Salad";
 
 function App() {
+  const [confirmationList, setConfirmationList] = useState([]);
   const [shoppingCart, setShoppingCart] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
     const cart = localStorage.getItem('shoppingCart');
     if (cart !== null) {
@@ -35,7 +37,7 @@ function App() {
       <NavBar></NavBar>
       <div className="row h-200  p-5 bg-light border rounded-3">
         {searching ? <BootstrapSpinner /> :
-          <Outlet context={{ shoppingCart, handleAddSalad, handleRemoveSalad, SaladConfirmation, handleSendOrder }} />}
+          <Outlet context={{ shoppingCart, handleAddSalad, handleRemoveSalad, SaladConfirmation, handleSendOrder, confirmationList }} />}
         <Footer></Footer>
       </div>
     </div >
@@ -80,11 +82,12 @@ function App() {
       body: JSON.stringify(saladOrder)
     }
 
-    console.log("Sending order: " + JSON.stringify(saladOrder))
     const data = await safeFetchJson('http://localhost:8080/orders/', options);
     if (data.status === "confirmed") {
       setShoppingCart([])
+      setConfirmationList([...confirmationList, data]);
       localStorage.removeItem("shoppingCart")
+
     }
     return data;
   }
@@ -101,7 +104,7 @@ function BootstrapSpinner() {
 function Header() {
   return (
     <header className="pb-3 mb-4 border-bottom">
-      <span className="fs-4">Min egen salladsbar</span>
+      <span className="fs-4">Salladsbar</span>
     </header>
   )
 }
@@ -119,6 +122,11 @@ function NavBar() {
           Se din order
         </NavLink>
       </li>
+      <li className="nav-item">
+        <NavLink className="nav-link" to="/confirmedOrders">
+          ConfirmedOrders
+        </NavLink>
+      </li>
       {/* more links */}
     </ul>);
 }
@@ -130,6 +138,7 @@ function saladToString(salad) {
 function ViewOrder() {
   const [confirmedState, setConfirmState] = useState({});
   const navigate = useNavigate();
+
   useEffect(() => {
     setConfirmState({})
   }, [])
@@ -157,6 +166,22 @@ function ViewOrder() {
         data={confirmedState} />
     </div>
   )
+}
+function ShowConfimedList() {
+  const props = useOutletContext();
+  let confirmationList = props.confirmationList
+  console.log("Detta är listan" + confirmationList)
+
+  return (<ul className="list-group">
+    {confirmationList.map((data) =>
+      <li className="list-group-item" key={data.uuid}>Status: {data.status} <br />
+        Ordernummer: {data.uuid} <br />
+        Tid: {data.timestamp} <br />
+        Antal Sallader: {data.order.length} <br />
+        Pris : {data.price} kr
+      </li>)}
+  </ul>)
+
 }
 
 function ShowConfirmation(props) {
@@ -230,4 +255,4 @@ function SaladConfirmation() {
   )
 }
 
-export { App, ViewOrder, SaladConfirmation };
+export { App, ViewOrder, SaladConfirmation, ShowConfimedList };
